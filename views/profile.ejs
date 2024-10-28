@@ -6,29 +6,80 @@
     <title>User Profile</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .profile-container {
             max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
+            padding: 30px;
             background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #4A4A4A;
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-info h5 {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .profile-info p {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .btn-primary {
+            background-color: #6D83F2;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #5a6fcc;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="profile-container">
-        <h5>Username: <%= user ? user.username : 'Not found' %></h5>
-        <h5>Email: <%= user ? user.password : 'Not available' %></h5>
-        <h5>Joined Date: <%= user ? user.joinedDate : 'Not available' %></h5>
-        <h5>About: <%= user ? user.about : 'Not available' %></h5>
-
-        <a href="/search" class="btn btn-primary mt-3">Back to Search</a>
+        <h2>User Profile</h2>
+        <div class="profile-info">
+            <h5>Username:</h5>
+            <p><%= user ? user.username : 'Not found' %></p>
+        </div>
+        <div class="profile-info">
+            <h5>Email:</h5>
+            <p><%= user ? user.email : 'Not available' %></p>
+        </div>
+        <div class="profile-info">
+            <h5>Joined Date:</h5>
+            <p><%= user ? user.joinedDate : 'Not available' %></p>
+        </div>
+        <div class="profile-info">
+            <h5>About:</h5>
+            <p><%= user ? user.about : 'Not available' %></p>
+        </div>
+        <div class="btn-container">
+            <a href="/search" class="btn btn-primary">Back to Search</a>
+        </div>
     </div>
 
     <!-- Bootstrap JS (optional) -->
