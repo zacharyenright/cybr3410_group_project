@@ -15,7 +15,16 @@ exports.search = (req, res) => {
   const searchQuery = req.body.searchQuery;
 
 //   ## Vulnerable SQL query
-  const sql = `SELECT * FROM users WHERE username LIKE '%${searchQuery}%' OR profile LIKE '%${searchQuery}%'`;
+const sql = `SELECT * FROM users WHERE username LIKE ? OR profile LIKE ?`;
+const params = [`%${searchQuery}%`, `%${searchQuery}%`];
+db.all(sql, params, (err, rows) => {
+    if (err) {
+        console.error("Error executing query:", err.message);
+        return res.render('search', { results: [] });
+    }
+    res.render('search', { results: rows });
+});
+
 
   db.all(sql, [], (err, rows) => {
       if (err) {
