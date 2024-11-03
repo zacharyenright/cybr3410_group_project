@@ -3,13 +3,20 @@ const db = require('../config/dbConfig');
 // Fixed Query
 exports.login = (req, res) => {
   const { username, password } = req.body;
-  const sql = `SELECT * FROM users WHERE username = ? AND password = ?`; // Use parameterized query
-  const params = [username, password];
+  const sql = `SELECT * FROM users WHERE username = ? AND password = ?`; // Parameterized query
+  const params = [username, password]; // Array to hold parameters
 
-  db.get(sql, (err, row) => {
-    if (err) return res.send("Error executing query.");
-    if (row) res.send(`Welcome, ${row.username}! Profile: ${row.profile}`);
-    else res.send("Login failed.");
+  db.get(sql, params, (err, row) => {
+    if (err) {
+      console.error("Error executing query:", err.message);
+      return res.send("Error executing query.");
+    }
+    if (row) {
+      // Redirect to the user's profile page using their user ID
+      res.redirect(`/profile/${row.id}`);
+    } else {
+      res.send("Login failed.");
+    }
   });
 };
 
@@ -40,19 +47,21 @@ db.all(sql, params, (err, rows) => {
 // Fixed Query
 exports.getProfile = (req, res) => {
   const userId = req.params.userId; // Get the user ID from the route parameters
-  const sql = `SELECT * FROM users WHERE id = ?`; // Parameterized query
-  const params = [userId]; // Array to hold parameters
-  
-  db.get(sql, (err, row) => {
-      if (err) {
-          console.error("Error fetching user profile:", err.message);
-          return res.send("Error fetching user profile.");
-      }
-      if (row) {
-          res.render('profile', { user: row }); // Pass the user data to the view
-          res.render('profile', { password: row }); // Pass the password data to the view
-      } else {
-          res.send("User not found."); // Handle case where no user is found
-      }
+  const sql = `SELECT * FROM users WHERE id = ?`; // Use parameterized query
+  const params = [userId];
+
+  db.get(sql, params, (err, row) => {
+    if (err) {
+      console.error("Error fetching user profile:", err.message);
+      return res.send("Error fetching user profile.");
+    }
+    if (row) {
+      // Do not send the password to the view
+      const { password, ...userWithoutPassword } = row; // Exclude password
+      res.render('profile', { user: userWithoutPassword }); // Pass the user data to the view
+    } else {
+      res.send("User not found."); // Handle case where no user is found
+    }
   });
 };
+
