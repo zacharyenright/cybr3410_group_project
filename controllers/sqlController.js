@@ -1,8 +1,10 @@
 const db = require('../config/dbConfig');
 
+// QUERY FIXED
 exports.login = (req, res) => {
   const { username, password } = req.body;
-  const sql = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`; // SQL Injection Vulnerability
+  const sql = `SELECT * FROM users WHERE username = ? AND password = ?`; // Use parameterized query
+  const params = [username, password];
 
   db.get(sql, (err, row) => {
     if (err) return res.send("Error executing query.");
@@ -14,8 +16,17 @@ exports.login = (req, res) => {
 exports.search = (req, res) => {
   const searchQuery = req.body.searchQuery;
 
-//   ## Vulnerable SQL query
-  const sql = `SELECT * FROM users WHERE username LIKE '%${searchQuery}%' OR profile LIKE '%${searchQuery}%'`;
+// QUERY FIXED
+const sql = `SELECT * FROM users WHERE username LIKE ? OR profile LIKE ?`;
+const params = [`%${searchQuery}%`, `%${searchQuery}%`];
+db.all(sql, params, (err, rows) => {
+    if (err) {
+        console.error("Error executing query:", err.message);
+        return res.render('search', { results: [] });
+    }
+    res.render('search', { results: rows });
+});
+
 
   db.all(sql, [], (err, rows) => {
       if (err) {
@@ -26,9 +37,11 @@ exports.search = (req, res) => {
   });
 };
 
+// QUERY FIXED
 exports.getProfile = (req, res) => {
   const userId = req.params.userId; // Get the user ID from the route parameters
-  const sql = `SELECT * FROM users WHERE id = ${userId}`; // Unsafe, for demonstration only
+  const sql = `SELECT * FROM users WHERE id = ?`; // Parameterized query
+  const params = [userId]; // Array to hold parameters
 
   db.get(sql, (err, row) => {
       if (err) {
