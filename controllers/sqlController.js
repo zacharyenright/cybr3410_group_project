@@ -1,6 +1,5 @@
 const db = require('../config/dbConfig');
 
-// QUERY FIXED
 exports.login = (req, res) => {
   const { username, password } = req.body;
   const sql = `SELECT * FROM users WHERE username = ? AND password = ?`; // Use parameterized query
@@ -16,7 +15,7 @@ exports.login = (req, res) => {
 exports.search = (req, res) => {
   const searchQuery = req.body.searchQuery;
 
-// QUERY FIXED
+//   ## Vulnerable SQL query
 const sql = `SELECT * FROM users WHERE username LIKE ? OR profile LIKE ?`;
 const params = [`%${searchQuery}%`, `%${searchQuery}%`];
 db.all(sql, params, (err, rows) => {
@@ -37,12 +36,11 @@ db.all(sql, params, (err, rows) => {
   });
 };
 
-// QUERY FIXED
 exports.getProfile = (req, res) => {
   const userId = req.params.userId; // Get the user ID from the route parameters
   const sql = `SELECT * FROM users WHERE id = ?`; // Parameterized query
   const params = [userId]; // Array to hold parameters
-
+  
   db.get(sql, (err, row) => {
       if (err) {
           console.error("Error fetching user profile:", err.message);
